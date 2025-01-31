@@ -45,6 +45,11 @@ const App = () => {
     }
   };
 
+  const handleBuyProduct = (index) => {
+    const updatedProducts = products.filter((_, i) => i !== index);
+    setProducts(updatedProducts);
+  };
+
   return (
     <div className="app">
       <h1>My Ecommerce</h1>
@@ -56,6 +61,7 @@ const App = () => {
             <p>{product.description}</p>
             <p><strong>Preço:</strong> R$ {product.price}</p>
             <p><strong>Categoria:</strong> {product.category}</p>
+            <button className="buy-button" onClick={() => handleBuyProduct(index)}>Comprar</button>
           </div>
         ))}
         <div className="add-product-card" onClick={() => setShowForm(true)}>

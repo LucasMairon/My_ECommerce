@@ -21,7 +21,7 @@ const App = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/orders/?search=${searchQuery}`);
+      const response = await fetch(`https://api.lucasmairon.grupo-05.sd.ufersa.dev.br/v1/order`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -40,17 +40,22 @@ const App = () => {
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', newOrder.name);
-    formData.append('price', newOrder.price);
-    formData.append('quantity', newOrder.quantity);
-    formData.append('is_payed', newOrder.is_payed);
-    formData.append('payment_form', newOrder.payment_form);
+    const newOrderData = {
+      id: Date.now().toString(),
+      name: newOrder.name,
+      price: newOrder.price,
+      quantity: newOrder.quantity,
+      payment_method: newOrder.payment_form,
+      status: newOrder.is_payed
+    };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/v1/orders/', {
+      const response = await fetch('https://api.lucasmairon.grupo-05.sd.ufersa.dev.br/v1/order', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newOrderData)
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -78,17 +83,21 @@ const App = () => {
 
   const handleUpdateOrder = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', newOrder.name);
-    formData.append('price', newOrder.price);
-    formData.append('quantity', newOrder.quantity);
-    formData.append('is_payed', newOrder.is_payed);
-    formData.append('payment_form', newOrder.payment_form);
+    const updatedOrderData = {
+      name: newOrder.name,
+      price: newOrder.price,
+      quantity: newOrder.quantity,
+      payment_method: newOrder.payment_form,
+      status: newOrder.is_payed
+    };
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/orders/${currentOrderId}/`, {
+      const response = await fetch(`https://api.lucasmairon.grupo-05.sd.ufersa.dev.br/v1/order/${currentOrderId}`, {
         method: 'PUT',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedOrderData)
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -111,7 +120,7 @@ const App = () => {
 
   const handleDeleteOrder = async (id) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/orders/${id}/`, {
+      const response = await fetch(`https://api.lucasmairon.grupo-05.sd.ufersa.dev.br/v1/order/${id}`, {
         method: 'DELETE'
       });
       if (!response.ok) {
@@ -143,8 +152,8 @@ const App = () => {
             <h3>{order.name}</h3>
             <p><strong>Preço:</strong> R$ {order.price}</p>
             <p><strong>Quantidade:</strong> {order.quantity}</p>
-            <p><strong>Forma de Pagamento:</strong> {order.payment_form}</p>
-            <p><strong>Status de Pagamento:</strong> {order.is_payed}</p>
+            <p><strong>Forma de Pagamento:</strong> {order.payment_method}</p>
+            <p><strong>Status de Pagamento:</strong> {order.status}</p>
             <button className="edit-button" onClick={() => handleEditOrder(order)}>Editar</button>
             <button className="delete-button" onClick={() => handleDeleteOrder(order.id)}>Deletar</button>
           </div>
